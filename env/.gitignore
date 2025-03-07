@@ -1,0 +1,12 @@
+# created by virtualenv automatically
+# *
+
+# Ignore large dependency files
+*.dll
+*.lib
+*.so
+*.pyd
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
