@@ -17,8 +17,8 @@ This is a web-based Automatic Number Plate Recognition (ANPR) system built using
 - Libraries Used: OpenCV, NumPy, Pillow
 
 ## 🔍 How It Works
-1 Upload an image of a vehicle license plate.
-2️ The system detects the plate using YOLOv5 and extracts text using EasyOCR.
-3️ The detected number is matched against the database.
-4️ If a match is found, vehicle details are displayed.
-5️ Users can manage fines and update records.
+- Upload an image of a vehicle license plate.
+- The system detects the plate using YOLOv5 and extracts text using EasyOCR.
+- The detected number is matched against the database.
+- If a match is found, vehicle details are displayed.
+- Users can manage fines and update records.
