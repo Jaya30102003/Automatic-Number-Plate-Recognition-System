@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        .login-container {
+            width: 350px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Title styling */
+        .login-container h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        a {
+    display: block;
+    width: 200px;
+    padding: 15px;
+    margin: 10px auto;
+    background-color: blue;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+}
+
+a:hover {
+    background-color: darkblue;
+}
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>ANPR</h2>
+        <h4>Login options</h4>  
+        
+        <a href="/admin">
+            Admin Login
+        </a> 
+        <a href="/user">
+            User Login
+        </a>  
+
+    </div>
+</body>
+</html>
