@@ -58,7 +58,7 @@ class User(db.Model):
 
 
 UPLOAD_FOLDER = 'static/' 
-model = YOLO(r'C:\Users\Dell\OneDrive\Desktop\ANPR\best.pt')  # Replace with your YOLO model path
+model = YOLO(r'C:\Users\Dell\OneDrive\Desktop\ANPR_trial\best.pt')  # Replace with your YOLO model path
 reader = easyocr.Reader(['en'], gpu=False)  # EasyOCR initialized
 
 def extract_text_easyocr(image_input):
@@ -327,6 +327,51 @@ def upload():
     else:
         message = f"Vehicle number '{license_plate_text}' not found in the database."
         return render_template('retrieve.html', message=message)
+
+from werkzeug.utils import secure_filename
+
+@app.route('/retrieve', methods=['POST'])
+def retrieve():
+    if 'image' not in request.files:
+        return render_template('retrieve.html', message='No image uploaded')
+
+    file = request.files['image']
+    
+    if file.filename == '':
+        return render_template('retrieve.html', message='No image selected')
+    
+    if file:
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+
+        # Load image using OpenCV
+        image = cv2.imread(filepath)
+
+        # Run YOLO model on image
+        results = model(image)
+        boxes = results[0].boxes.xyxy.cpu().numpy() if results[0].boxes else []
+
+        if not boxes.any():
+            return render_template('retrieve.html', image_path=filepath, message='No number plate detected')
+
+        # Assume first box is the number plate
+        x1, y1, x2, y2 = map(int, boxes[0])
+        plate_region = image[y1:y2, x1:x2]
+
+        # OCR extraction
+        plate_text = extract_text_easyocr(plate_region).strip().upper().replace(" ", "")
+        
+        if not plate_text:
+            return render_template('retrieve.html', image_path=filepath, message='Number not readable')
+
+        # Search in the database
+        detail = Details.query.filter_by(veh_no=plate_text).first()
+
+        if detail:
+            return render_template('retrieve.html', image_path=filepath, detail=detail)
+        else:
+            return render_template('retrieve.html', image_path=filepath, message=f'No record found for {plate_text}')
 
 
 @app.route('/user_logout')
