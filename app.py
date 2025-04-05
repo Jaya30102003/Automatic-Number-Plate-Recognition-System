@@ -58,7 +58,7 @@ class User(db.Model):
 
 
 UPLOAD_FOLDER = 'static/' 
-model = YOLO(r'C:\Users\Dell\OneDrive\Desktop\ANPR_trial\best.pt')  # Replace with your YOLO model path
+model = YOLO(r'best.pt')  # Replace with your YOLO model path
 reader = easyocr.Reader(['en'], gpu=False)  # EasyOCR initialized
 
 def extract_text_easyocr(image_input):
