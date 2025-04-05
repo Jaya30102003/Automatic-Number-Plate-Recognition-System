@@ -58,7 +58,7 @@ class User(db.Model):
 
 
 UPLOAD_FOLDER = 'static/' 
-model = YOLO(r'C:\Users\Dell\OneDrive\Desktop\ANPR\env\best.pt')  # Replace with your YOLO model path
+model = YOLO(r'C:\Users\Dell\OneDrive\Desktop\ANPR\best.pt')  # Replace with your YOLO model path
 reader = easyocr.Reader(['en'], gpu=False)  # EasyOCR initialized
 
 def extract_text_easyocr(image_input):
@@ -222,6 +222,7 @@ def register():
 
 @app.route('/user', methods=['GET', 'POST'])
 def user_login():
+    message = ''
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -231,8 +232,8 @@ def user_login():
             session['user'] = username
             return redirect(url_for('user_home'))
         else:
-            flash('Invalid credentials. Try again.', 'danger')
-    return render_template('user_login.html')
+            message = 'Invalid credentials. Try again.'
+    return render_template('user_login.html',message = message)
 
 @app.route('/user_home')
 def user_home():
@@ -285,6 +286,48 @@ def user_home():
             return render_template('retrieve.html', message=message)
 
     return render_template('retrieve.html')
+
+import base64
+from io import BytesIO
+from PIL import Image
+import numpy as np
+import cv2
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    image_data = request.form['image']
+    # Decode the base64 image data
+    image_data = image_data.split(',')[1]
+    image_bytes = base64.b64decode(image_data)
+    image = Image.open(BytesIO(image_bytes))
+    # Convert PIL image to OpenCV format
+    image_cv = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+
+    # Process the image with your model and EasyOCR
+    results = model(image_cv)
+
+    if len(results[0].boxes) == 0:
+        message = "No license plate detected."
+        return render_template('retrieve.html', message=message)
+
+    box = results[0].boxes[0]
+    x_min, y_min, x_max, y_max = map(int, box.xyxy[0].tolist())
+    license_plate_img = image_cv[y_min:y_max, x_min:x_max]
+    license_plate_img_rgb = cv2.cvtColor(license_plate_img, cv2.COLOR_BGR2RGB)
+    license_plate_text = extract_text_easyocr(license_plate_img_rgb).strip().upper()
+
+    if not license_plate_text:
+        message = "Could not detect license plate text."
+        return render_template('retrieve.html', message=message)
+
+    detail = Details.query.filter_by(veh_no=license_plate_text).first()
+
+    if detail:
+        return render_template('retrieve.html', detected_text=license_plate_text, detail=detail)
+    else:
+        message = f"Vehicle number '{license_plate_text}' not found in the database."
+        return render_template('retrieve.html', message=message)
+
 
 @app.route('/user_logout')
 def user_logout():

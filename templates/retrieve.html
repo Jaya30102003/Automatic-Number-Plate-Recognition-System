@@ -6,116 +6,110 @@
     <title>Retrieve Vehicle Details</title>
     <style>
         /* Page styling */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
 
-        .container {
-            max-width: 900px; /* Increased width for better layout */
-            margin: auto;
-            background: white;
-            padding: 20px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
+.container {
+    max-width: 900px;
+    width: 100%;
+    background: white;
+    padding: 20px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+}
 
-        .form-container {
-            display: flex;
-            align-items: flex-start; /* Align items to the top */
-        }
+/* Form styling */
+form {
+    margin-top: 20px;
+}
 
-        .image-section {
-            flex: 1; /* Make the image section take half the width */
-            padding-right: 20px;
-        }
+input[type="file"] {
+    display: block;
+    margin: 0 auto 20px;
+}
 
-        .detail-section {
-            flex: 1; /* Make the detail section take the other half */
-        }
+input[type="submit"], button {
+    padding: 10px 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
 
-        /* Form styling */
-        form {
-            margin-top: 20px;
-            text-align: center;
-        }
+input[type="submit"]:hover, button:hover {
+    background: #0056b3;
+}
 
-        input[type="file"] {
-            display: block;
-            margin: 0 auto 20px;
-        }
+/* Video and Canvas styling */
+video, canvas {
+    display: none;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+}
 
-        input[type="submit"] {
-            padding: 10px 15px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+/* Back to Admin button */
+.admin-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+}
 
-        input[type="submit"]:hover {
-            background: #0056b3;
-        }
+.admin-btn:hover {
+    background: #218838;
+}
 
-        /* Back to Admin button */
-        .admin-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #28a745;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            text-decoration: none;
-        }
+/* Table styling */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
 
-        .admin-btn:hover {
-            background: #218838;
-        }
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
 
-        /* Table styling */
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
+th {
+    background-color: #007bff;
+    color: white;
+}
 
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
+#imagePreview {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-top: 10px;
+}
 
-        th {
-            background-color: #007bff;
-            color: white;
-        }
+/* Adjust layout for mobile */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+}
 
-        #imagePreview {
-            width: 100%; /* Adjust the size of the preview image */
-            height: auto;
-            display: block;
-            margin-top: 10px;
-        }
-
-        /* Adjust layout for mobile */
-        @media (max-width: 768px) {
-            .form-container {
-                flex-direction: column;
-            }
-
-            .image-section, .detail-section {
-                padding: 0;
-            }
-        }
-
-        .fine-btn {
+.fine-btn {
     display: inline-block;
     margin-top: 15px;
     padding: 10px 15px;
@@ -146,7 +140,8 @@
             <input type="file" id="imageInput" name="image" accept="image/*" required onchange="showImagePreview(event)">
             <input type="submit" value="Submit">
         </form>
-
+        
+        
         <div class="form-container">
             <!-- Image Preview Section -->
             <div class="image-section">
@@ -158,39 +153,57 @@
                 {% endif %}
             </div>
 
-            <!-- Vehicle Details Section -->
-            <div class="detail-section">
-                {% if message %}
-                    <p>{{ message }}</p>
-                {% endif %}
-
-                {% if detail %}
-                <h4>Detected Number: {{ detail.veh_no }}</h4>
-                <table>
-                    <tr>
-                        <th>Vehicle Number</th>
-                        <td>{{ detail.veh_no }}</td>
-                    </tr>
-                    <tr>
-                        <th>Owner Name</th>
-                        <td>{{ detail.owner }}</td>
-                    </tr>
-                    <tr>
-                        <th>Address</th>
-                        <td>{{ detail.address }}</td>
-                    </tr>
-                </table>
-
-                <button>
-                    <a href="{{ url_for('vehicle_fines', veh_no=detail.veh_no) }}">View Fines</a>
-                </button>
-
-                {% elif message %}
-                <p style="color: red; margin-top: 20px;">{{ message }}</p>
-                {% endif %}
-            </div>
+            <h2> Camera Option </h2>
+        <button id="start-camera">Open Camera</button>
+        <video id="video" width="640" height="480" autoplay style="display: none;"></video>
+        <button id="capture" style="display: none;">Capture</button>
+        <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+        <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data" style="display: none;">
+            <input type="hidden" name="image" id="image-data">
+            <button type="submit">Submit</button>
+        </form>
+            
         </div>
     </div>
+
+    <div class="container">
+        <!-- Vehicle Details Section -->
+         <h1>Vehicle Details</h1>
+        <div class="detail-section">
+            {% if message %}
+                <p>{{ message }}</p>
+            {% else %}
+            <h4>The vehicle details appears here</h4>
+            {% endif %}
+
+            {% if detail %}
+            <h4>Detected Number: {{ detail.veh_no }}</h4>
+            <table>
+                <tr>
+                    <th>Vehicle Number</th>
+                    <td>{{ detail.veh_no }}</td>
+                </tr>
+                <tr>
+                    <th>Owner Name</th>
+                    <td>{{ detail.owner }}</td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td>{{ detail.address }}</td>
+                </tr>
+            </table>
+
+            <button>
+                <a href="{{ url_for('vehicle_fines', veh_no=detail.veh_no) }}">View Fines</a>
+            </button>
+
+            {% elif message %}
+            <p style="color: red; margin-top: 20px;">{{ message }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+  
 
     <script>
         function showImagePreview(event) {
@@ -208,7 +221,33 @@
                 reader.readAsDataURL(imageInput.files[0]);  // Read the selected file as data URL
             }
         }
-    </script>
+    const startCameraButton = document.getElementById('start-camera');
+    const video = document.getElementById('video');
+    const captureButton = document.getElementById('capture');
+    const canvas = document.getElementById('canvas');
+    const imageDataInput = document.getElementById('image-data');
+    const uploadForm = document.getElementById('upload-form');
+
+    let stream = null;
+
+    startCameraButton.addEventListener('click', async () => {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        video.style.display = 'block';
+        captureButton.style.display = 'block';
+        startCameraButton.style.display = 'none';
+    });
+
+    captureButton.addEventListener('click', () => {
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageDataURL = canvas.toDataURL('image/png');
+        imageDataInput.value = imageDataURL;
+        uploadForm.style.display = 'block';
+        captureButton.style.display = 'none';
+        video.style.display = 'none';
+        stream.getTracks().forEach(track => track.stop());
+    });
+        </script>
 
 </body>
 </html>
