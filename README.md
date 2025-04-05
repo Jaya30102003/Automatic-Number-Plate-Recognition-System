@@ -1,4 +1,4 @@
-# Automatic Number Plate Recognition System
+# Automatic Number Plate Recognition System 🚘🔍
 ## 📌 Overview
 This is a web-based Automatic Number Plate Recognition (ANPR) system built using Flask for the backend and HTML, CSS, and minimal JavaScript for the frontend. It detects license plate numbers from uploaded images and retrieves vehicle owner details from a database. The system also manages fines associated with detected vehicles.
 
