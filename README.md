@@ -16,7 +16,7 @@ This is a web-based Automatic Number Plate Recognition (ANPR) system built using
 - Machine Learning: YOLOv5, EasyOCR
 - Libraries Used: OpenCV, NumPy, Pillow
 
-For terminals instructions : [📜 Instructions](Instructions.md)
+For terminals instructions : [Instructions📜](Instructions.md)
 
 ## 🔍 How It Works
 - Upload an image of a vehicle license plate.
